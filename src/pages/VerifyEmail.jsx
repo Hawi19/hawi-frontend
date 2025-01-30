@@ -1,45 +1,48 @@
-import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
-import { useSnackbar } from "notistack";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axiosInstance from "../services";
+import "bootstrap/dist/css/bootstrap.min.css"; // Import Bootstrap CSS
 
 const VerifyEmail = () => {
   const navigate = useNavigate();
-  const { enqueueSnackbar } = useSnackbar();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
-  // Extract the query parameter 'token' from the URL
+  const handleVerify = async () => {
+    setLoading(true);
+    const queryParams = new URLSearchParams(window.location.search);
+    const token = queryParams.get("token");
 
-  const params = useParams();
+    if (!token) {
+      alert(
+        "Invalid token. Please check your email for the verification link."
+      );
+      setLoading(false);
+      return;
+    }
 
-  useEffect(() => {
-    const verifyEmail = async () => {
-      try {
-        // Send the token to the backend for verification
-        await axios.get(
-          `https://email-verification-bphi.onrender.com/user/verify?token=${params.token}`
-        );
-        enqueueSnackbar("Email verified successfully!", { variant: "success" });
-        navigate("/");
-      } catch (error) {
-        enqueueSnackbar("Invalid or expired token", { variant: "error" });
-        console.error("Verification error:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    verifyEmail(); 
-  }, []);
+    try {
+      await axiosInstance.get(`/verify?token=${token}`); // Use axiosInstance
+      alert("Email verified successfully. You can now log in.");
+      navigate("/");
+    } catch (error) {
+      console.error(error);
+      const message =
+        error.response?.data?.message ||
+        "Verification failed. Please try again.";
+      alert(message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <div>
-      <h1>Email Verification</h1>
-
+    <div className="d-flex align-items-center justify-content-center vh-100 bg-light">
       {loading ? (
-        <p>Please wait while we verify your email...</p>
+        <h2>Verifying your email...</h2>
       ) : (
-        <p>Email verification completed.</p>
+        <button className="btn btn-success btn-lg" onClick={handleVerify}>
+          Verify Email
+        </button>
       )}
     </div>
   );

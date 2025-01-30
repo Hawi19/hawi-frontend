@@ -20,7 +20,10 @@ const  SignUp= () => {
       })
       .catch((error) => {
         enqueueSnackbar("Sign Up Failed", { variant: "error" });
-        console.log(error);
+       console.log(
+         "Error during sign up:",
+         error.response ? error.response.data : error.message
+       );
       });
   };
   return (

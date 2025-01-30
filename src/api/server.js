@@ -1,1 +1,1 @@
-export const apiUrl = "https://email-verification-bphi.onrender.com";
+export const apiUrl = "http://localhost:2800";
