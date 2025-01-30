@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../services";
-import "bootstrap/dist/css/bootstrap.min.css"; // Import Bootstrap CSS
+// import "bootstrap/dist/css/bootstrap.min.css"; // Import Bootstrap CSS
 
 const VerifyEmail = () => {
   const navigate = useNavigate();
